@@ -2,7 +2,7 @@ import os
 import zmq
 
 from ..table import Table
-from ..utils.utils import getHash
+from ..utils import getHash
 
 class Hash(Table):
 
