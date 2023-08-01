@@ -14,7 +14,10 @@ class Hash(Table):
             'path text unique',
             'kind text',
         ]
-        super().__init__(name='hash', fields=self.fields, dname='hash')
+        super().__init__(
+                name='hash', 
+                fields=self.fields, 
+                dname='hash')
 
         self.dhashes={}
         self.port=parser_port
