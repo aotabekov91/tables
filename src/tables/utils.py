@@ -4,8 +4,8 @@ import hashlib
 import pdftotext
 import requests
 import fake_useragent
+from pypdf import PdfReader
 from bs4 import BeautifulSoup
-from PyPDF2 import PdfReader
 from summa import keywords as skey
 from summa import summarizer as ssum
 
