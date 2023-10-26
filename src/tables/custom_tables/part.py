@@ -29,23 +29,6 @@ class Part(Table):
         self.hash=Hash()
         self.metadata=Metadata()
 
-    def search(self, *args, **kwargs):
-
-        found=self.index.search(*args, **kwargs)
-        data=[]
-        for f in found:
-            fields=f.fields()
-            row=self.getRow({'id': f['id']})
-            fields.update(row[0])
-            fields['path']=self.hash.getPath(fields['hash'])
-            meta=self.metadata.getRow({'hash':fields['hash']})
-            if meta: 
-                meta[0].pop('id')
-                meta[0].pop('kind')
-                fields.update(meta[0])
-            data+=[fields]
-        return data
-
     def addDocument(self, dhash, path):
 
         data={'hash': dhash, 'kind':'document'}
