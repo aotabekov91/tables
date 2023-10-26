@@ -48,7 +48,7 @@ class Table:
         cfields=[]
         for f in self.fields:
             fname=f.split(' ')[0]
-            if fname in exc:
+            if not fname in exc:
                 cfields+=[f.split(' ')]
         self.fdict={}
         for f in cfields:
@@ -180,9 +180,9 @@ class Table:
         for k, v in cond.items():
             if k in self.cfields:
                 cri[k]=v
-        cond=self.getCond(cri)
+        c=self.getCond(cri)
         sql = 'select * from {} where {}'
-        sql = sql.format(self.name, cond)
+        sql = sql.format(self.name, c)
         return self.query(sql)
 
     def getAll(self):
