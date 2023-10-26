@@ -1,1 +1,0 @@
-# Factor whoosh indexing out
