@@ -4,7 +4,6 @@ from .joke import Joke
 from .quote import Quote
 from .jumper import Jumper
 from .metadata import Metadata
-from .pomodoro import Pomodoro
 from .bookmark import Bookmark
 from .autosave import Autosave
 from .quickmark import Quickmark
