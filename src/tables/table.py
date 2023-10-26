@@ -56,9 +56,6 @@ class Table:
         cfields=list(self.fdict.keys())
         self.cfields=cfields
 
-    def cleanFields(self): 
-        return self.cfields
-
     def createTable(self):
 
         flds=','.join(self.fields)
