@@ -8,7 +8,8 @@ class Quote(Table):
             'id integer PRIMARY KEY AUTOINCREMENT',
             'author text',
             'text text',
-            'constraint unique_quote unique (author, text)',
-        ]
-
-        super().__init__(name='quote', fields=self.fields, dname='quotes')
+            'constraint unique_quote unique (author, text)']
+        super().__init__(
+                name='quote', 
+                fields=self.fields, 
+                dname='quotes')

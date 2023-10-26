@@ -1,9 +1,13 @@
-[build-system]
-requires=["poetry-core"]
-build-backend="poetry.core.masonry.api"
+[tool.poetry]
+name = "tables"
+version = "0.0.1"
+description = "Tables"
+authors = ["A O <you@example.com>"]
+readme = "README.md"
 
-[tool.project]
+[tool.poetry.dependencies]
 python = "^3.9"
-name="tables"
-version="0.0.1"
-description="SQLite helper"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -9,7 +9,8 @@ class Autosave(Table):
             'hash text unique',
             'url text unique',
             'page int',
-            'position text',
-        ]
-
-        super().__init__(name='autosave', fields=self.fields, dname='autosave') 
+            'position text']
+        super().__init__(
+                name='autosave', 
+                fields=self.fields, 
+                dname='autosave') 

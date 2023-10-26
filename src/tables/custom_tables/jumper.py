@@ -11,7 +11,8 @@ class Jumper(Table):
             'page int',
             'position text',
             'constraint unique_hash_jump unique (hash, page, position)',
-            'constraint unique_url_jump unique (url, page, position)',
-        ]
-
-        super().__init__(name='jumper', fields=self.fields, dname='jumper') 
+            'constraint unique_url_jump unique (url, page, position)' ]
+        super().__init__(
+                name='jumper', 
+                fields=self.fields, 
+                dname='jumper') 

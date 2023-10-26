@@ -9,7 +9,8 @@ class Quickmark(Table):
             'hash text',
             'mark text',
             'position text',
-            'constraint unique_doc_quickmark unique (hash, mark)',
-        ]
-
-        super().__init__(name='quickmark', fields=self.fields, dname='lura')
+            'constraint unique_doc_quickmark unique (hash, mark)']
+        super().__init__(
+                name='quickmark', 
+                fields=self.fields, 
+                dname='lura')

@@ -1,4 +1,3 @@
-from .hash import Hash
 from ..table import Table
 
 class Annotation(Table):
@@ -16,16 +15,8 @@ class Annotation(Table):
             'position text',
             'function text',
             'constraint unique_document unique (hash, page, position)',
-            'constraint unique_web unique (url, position)',
-        ]
-
-        super().__init__(name='annotation', fields=self.fields, dname='annotation') 
-
-        self.hash=Hash()
-
-    def search(self, *args, **kwargs):
-
-        found=super().search(*args, **kwargs)
-        for f in found:
-            if f['hash']: f['path']=self.hash.getPath(f['hash'])
-        return found
+            'constraint unique_web unique (url, position)']
+        super().__init__(
+                name='annotation', 
+                fields=self.fields, 
+                dname='annotation') 
