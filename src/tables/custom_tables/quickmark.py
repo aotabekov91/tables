@@ -6,11 +6,14 @@ class Quickmark(Table):
 
         self.fields = [
             'id integer PRIMARY KEY AUTOINCREMENT',
+            'url text',
             'hash text',
             'mark text',
+            'page integer',
             'position text',
-            'constraint unique_doc_quickmark unique (hash, mark)']
+            'kind text not null',
+            'constraint unique_doc_quickmark unique (hash, page, url, kind, mark)']
         super().__init__(
                 name='quickmark', 
                 fields=self.fields, 
-                dname='lura')
+                dname='quickmark')

@@ -6,8 +6,8 @@ class Bookmark(Table):
 
         self.fields = [
             'id integer PRIMARY KEY AUTOINCREMENT',
-            'hash text',
             'url text',
+            'hash text',
             'text text',
             'title text',
             'page integer',
