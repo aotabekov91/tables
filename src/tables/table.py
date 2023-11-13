@@ -69,19 +69,16 @@ class Table:
             updateDict
             ):
 
-        cond=self.getCond(criteria)
-        sql='update {} set {} where {}'
         upd=[]
+        sql='update {} set {} where {}'
         for k, v in updateDict.items():
             v=str(v).replace('"',  '\'')
-            upd+=['{} = {}'.format(k, v)]
-        upd=', '.join(upd)
+            upd+=['{} = "{}"'.format(k, v)]
         sql=sql.format(
-                self.name, upd, cond)
+                self.name, 
+                ', '.join(upd),
+                self.getCond(criteria))
         self.exec(sql)
-        cr=criteria.copy()
-        up=updateDict.copy()
-        cr.update(up)
 
     def writeRow(
             self, 

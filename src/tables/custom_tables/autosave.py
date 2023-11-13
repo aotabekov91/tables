@@ -8,6 +8,7 @@ class Autosave(Table):
             'id integer PRIMARY KEY AUTOINCREMENT',
             'hash text unique',
             'url text unique',
+            'kind text',
             'page int',
             'position text']
         super().__init__(
