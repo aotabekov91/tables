@@ -105,7 +105,8 @@ class Table:
                 ','.join(f), 
                 ','.join(v))
         try:
-            self.exec(sql)
+            cur=self.exec(sql, query=True)
+            return cur.lastrowid
         except sqlite3.IntegrityError:
             rows=self.getRow(rowDic)
             if update and rows:
@@ -114,8 +115,9 @@ class Table:
                     uniqueField=self.idField
                 cp=rowDic.copy()
                 c={uniqueField:d[uniqueField]}
-                cp.pop(uniqueField, None)
+                idx=cp.pop(uniqueField, None)
                 self.updateRow(c, cp)
+                return idx
 
     def removeRow(
             self, 
@@ -182,7 +184,7 @@ class Table:
         sql = sql.format(self.name, c)
         return self.query(sql)
 
-    def getAll(self):
+    def getRows(self):
 
         sql='select * from {}'
         sql=sql.format(self.name)
