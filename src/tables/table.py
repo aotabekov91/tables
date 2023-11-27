@@ -1,29 +1,42 @@
 import sqlite3
-from os import path, mkdir, popen
+from os.path import expanduser
+from os import mkdir, popen, path
+
+def dict_factory(c, r):
+
+    d = {}
+    for idx, col in enumerate(c.description):
+        d[col[0]] = r[idx]
+    return d
 
 class Table:
 
-    def __init__(
-            self, 
-            fields, 
-            loc=None, 
-            name=None, 
-            idField='id', 
-            dname='table',
-            folder='~/.tables'
-            ):
+    uniq={}
+    loc=None 
+    name=None
+    fields=[]
+    foreign={}
+    idField='id' 
+    dname='table'
+    folder='~/.tables'
 
-        self.loc=loc
-        self.name=name
-        self.dname=dname
-        self.fields=fields
-        self.idField=idField
-        self.folder=path.expanduser(
-                folder)
+    def __init__(self):
+        self.setup()
+
+    def setup(self):
+
+        self.folder=expanduser(self.folder)
+        self.addUniq()
         self.setName()
         self.setLoc()
         self.setFields()
         self.createTable() 
+
+    def addUniq(self):
+
+        for n, c in self.uniq.items():
+            f=f'constraint {n} unique {str(c)}'
+            self.fields+=[f]
 
     def setName(self):
 
@@ -81,12 +94,23 @@ class Table:
         self.exec(sql)
 
     def writeRow(
-            self, 
-            rowDic=None, 
-            update=True, 
-            uniqueField=None
-            ):
+            self, rowDic=None, uid=None):
 
+        cond={}
+        for k, c in self.uniq.items():
+            cond={}
+            for i in c:
+                if not i in rowDic: break
+                cond[i]=rowDic[i]
+        rs=self.getRow(cond)
+        if rs:
+            d=rs[0]
+            uid = uid or self.idField
+            rc=rowDic.copy()
+            rc.pop(uid, None)
+            idx=d.get(uid, None)
+            self.updateRow({uid: idx}, rc)
+            return idx
         f=[]
         for k in rowDic.keys():
             if k in self.cfields:
@@ -97,24 +121,9 @@ class Table:
                 k=str(k).replace('"', '\'')
                 v+=['"{}"'.format(k)]
         sql = 'insert into {} ({}) values ({})'
-        sql = sql.format(
-                self.name, 
-                ','.join(f), 
-                ','.join(v))
-        try:
-            cur=self.exec(sql, query=True)
-            return cur.lastrowid
-        except sqlite3.IntegrityError:
-            rows=self.getRow(rowDic)
-            if update and rows:
-                d=rows[0]
-                if not uniqueField: 
-                    uniqueField=self.idField
-                cp=rowDic.copy()
-                c={uniqueField:d[uniqueField]}
-                idx=cp.pop(uniqueField, None)
-                self.updateRow(c, cp)
-                return idx
+        v, f=','.join(v), ','.join(f)
+        sql = sql.format(self.name, f, v)
+        return self.exec(sql)
 
     def removeRow(
             self, 
@@ -126,35 +135,22 @@ class Table:
         sql = sql.format(self.name, c)
         self.exec(sql)
 
-    def exec(
-            self, 
-            sql, 
-            values=None, 
-            query=False
-            ):
+    def exec(self, sql, fetch=False):
 
-        def dict_factory(c, r):
-            d = {}
-            for idx, col in enumerate(c.description):
-                d[col[0]] = r[idx]
-            return d
-
-        c = sqlite3.connect(self.loc)
-        c.row_factory = dict_factory 
-        cur=c.cursor()
-        try:
-            if values:
-                cur.execute(sql, values)
-                c.commit()
-            else:
+        f=None
+        with sqlite3.connect(self.loc) as c:
+            c.row_factory = dict_factory 
+            cur=c.cursor()
+            try:
                 cur.execute(sql)
+                f=cur.lastrowid
+                if fetch:
+                    f=cur.fetchall()
+            except:
+                pass
+            finally:
                 c.commit()
-            if query:
-                return cur
-            else:
-                c.close()
-        except:
-            pass
+        return f
 
     def getCond(self, cond):
 
@@ -179,26 +175,16 @@ class Table:
         c=self.getCond(cri)
         sql = 'select * from {} where {}'
         sql = sql.format(self.name, c)
-        return self.query(sql)
+        return self.exec(sql, fetch=True)
 
     def getRows(self):
 
         sql='select * from {}'
         sql=sql.format(self.name)
-        return self.query(sql)
-
-    def query(self, sql):
-
-        r=self.exec(sql, query=True)
-        if r: return r.fetchall()
-        return []
+        return self.exec(sql, fetch=True)
 
     def getField(
-            self, 
-            field, 
-            name, 
-            value
-            ):
+            self, field, name, value):
 
         d={'field':name, 'value':value}
         r=self.getRow(d)
