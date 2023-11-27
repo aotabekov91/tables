@@ -4,15 +4,15 @@ class Annotation(Table):
 
     name='annotation'
     dname='annotation'
+    uniq={
+          'auniq': ('hash', 'kind', 'position', 'function'),
+          }
     fields = [
         'id integer PRIMARY KEY AUTOINCREMENT',
-        'kind text',
-        'page int',
         'hash text',
-        'url text',
         'text text',
         'content text',
         'position text',
         'function text',
-        'constraint unique_document unique (hash, page, position)',
-        'constraint unique_web unique (url, position)']
+        'kind text not null',
+        ]
